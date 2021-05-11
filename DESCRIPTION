@@ -15,11 +15,19 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Imports:
-  dplyr,
   dccvalidator,
+  dplyr,
   easyPubMed,
   glue,
+  purrr,
   readr,
-  reticulate
+  reticulate,
+  rlang,
+  stringr,
+  tibble
+Suggests:
+  log4r,
+  lubridate,
+  optparse
 SystemRequirements: synapseclient (pypi.org/project/synapseclient)
 RoxygenNote: 7.1.1
