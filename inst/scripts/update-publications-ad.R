@@ -112,6 +112,9 @@ dat$journal <- hacky_cleaning(dat$journal)
 dat$abstract <- hacky_cleaning(dat$abstract)
 ## Remove common, unallowed characters from entity name; includes hacky_cleaning
 dat$entity_name <- remove_unacceptable_characters(dat$entity_name)
+## Hacky cleaning sometimes adds extra characters and puts abstracts + author lists over the 500 character Synapse annotations limit; remove
+dat$abstract <- dat$abstract <- stringr::str_trunc(dat$abstract, width = 500)
+dat$authors <- dat$authors <- stringr::str_trunc(dat$authors, width = 500)
 
 ## Set up multi-annotation columns correctly
 dat <- set_up_multiannotations(dat, "grant")
