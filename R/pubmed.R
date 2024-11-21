@@ -106,7 +106,7 @@ pub_query <- function(pub_pmids_list) {
   names(pub_summary_list) <- names(pub_pmids_list)
 
   # collapse list of dataframes into a single df
-  dplyr::bind_rows(pub_summary_list, .id = "grantSerialNumber")
+  dplyr::bind_rows(pub_summary_list, .id = "result")
 }
 
 #' Parse Summary Obj
@@ -214,7 +214,7 @@ make_entity_name <- function(dat){
   # Need to leave space for year and pubmed ID
   # Arbitrarily set to 200 characters
   short_name <- stringr::str_trunc(
-    glue::glue("{first_author} {dat$fulljournalname}"),
+    glue::glue("{first_author} {dat$journal}"),
     width = 200
   )
 

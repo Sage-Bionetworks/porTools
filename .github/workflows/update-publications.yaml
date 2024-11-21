@@ -1,8 +1,9 @@
-name: "Update AD Publications"
+name: "Update Publications"
 
 on:
   schedule:
     - cron: "0 0 1 * *"
+  workflow_dispatch:
 
 env:
   RETICULATE_AUTOCONFIGURE: 'FALSE'
@@ -10,18 +11,19 @@ env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
-  update-ad-publications:
+  update-publications:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
 
-      - uses: r-lib/actions/setup-r@master
+      - uses: r-lib/actions/setup-r@v2
         with:
-          r-version: '4.0'
+          r-version: '4.1.3'
 
       - name: Query dependencies
         run: |
           install.packages('remotes')
+          install.packages("synapser")
           saveRDS(remotes::dev_package_deps(dependencies = TRUE), "depends.Rds", version = 2)
         shell: Rscript {0}
 
@@ -48,11 +50,11 @@ jobs:
         run: |
           Rscript -e "reticulate::py_discover_config()"
           Rscript -e "reticulate::py_install(c('pandas', 'numpy', 'boto3', 'synapseclient'), pip = TRUE)"
-      
+
       - name: Install porTools
         run: |
-          Rscript -e "remotes::install_github('Sage-Bionetworks/porTools')"
-      
+          Rscript -e "remotes::install_github('eliteportal/publication_scraper')"
+
       - name: Query PubMed and upload results
         run: |
-          Rscript ./inst/scripts/update-publications-ad.R --grant_table syn17024229 --parent syn20463015 --pub_table syn20448807 --auth_token ${{ secrets.SYNAPSE_PAT }}
+          Rscript ./inst/scripts/query-pubmed-grants.R --grant_table syn51209786 --parent syn51400816 --pub_table syn51407023 --auth_token ${{ secrets.SYNAPSE_PAT }}

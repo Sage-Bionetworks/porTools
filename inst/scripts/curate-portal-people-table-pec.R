@@ -1,9 +1,11 @@
 library(tidyverse)
 library(purrr)
-synapseclient <- reticulate::import("synapseclient")
-syntab <- reticulate::import("synapseclient.table")
-syn <- synapseclient$Synapse()
-syn$login()
+
+# Login to synapse
+source("~/Projects/ELITE/porTools/R/synapseLogin.R")
+
+### Hard coded variables
+source("~/Projects/ELITE/porTools/R/globalHardCodedVariables.R")
 
 ## functions
 update_synapse_table <- function(table_id, update_df, syn, syntab) {
@@ -14,6 +16,7 @@ update_synapse_table <- function(table_id, update_df, syn, syntab) {
   update_rows <- syntab$Table(table_id, tmpfile)
   syn$store(update_rows)
 }
+
 make_df <- function(list, column_name) {
   df <- tibble::enframe(list) %>%
     tidyr::unnest(cols = c(value), keep_empty = TRUE)
@@ -22,7 +25,7 @@ make_df <- function(list, column_name) {
   df
 }
 ###
-people <- read_csv(syn$tableQuery("Select * from syn22096112")$filepath)
+people <- read_csv(syn$tableQuery(glue::glue("SELECT * from {sid_people_table}")$filepath) # table to portal - people
 team <- syn$getTeamMembers("3323356")
 list <- reticulate::iterate(team)
 member <- map(list, ~.$get("member"))
@@ -57,4 +60,4 @@ update <- update %>% mutate_all(function(x) ifelse(is.na(x),"",x))
 
 update$ROW_ID <- ""
 
-update_synapse_table("syn22096112", update, syn, syntab)
+update_synapse_table(sid_people_table, update, syn, syntab)
