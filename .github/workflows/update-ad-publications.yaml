@@ -1,8 +1,9 @@
 name: "Update AD Publications"
 
 on:
-  schedule:
+  - schedule:
     - cron: "0 0 1 * *"
+  - workflow_dispatch
 
 env:
   RETICULATE_AUTOCONFIGURE: 'FALSE'
